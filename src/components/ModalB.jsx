@@ -77,6 +77,7 @@ export default function ModalB() {
             value={searchQuery}
             onChange={handleSearchChange}
             onKeyDown={handleSearchKeyDown}
+            style={{marginBottom:"1rem"}}
           />
           <Table striped bordered hover>
             <thead>
