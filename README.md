@@ -1,4 +1,12 @@
 Vercel live link- https://coding-test-mediusware.vercel.app/
+
+To start the Project-
+You need node version 16.
+after installing node version 16, open the project to your favorite code editor,
+In the terminal give the command "npm i",
+then to run the project in the terminal type the command "npm run dev".
+
+Images of the task
 ![image](https://github.com/MohammadIsmailAlam/Coding_test_Mediusware/assets/102619575/7a7a630e-d094-49f4-bd0c-e5cff89f0022)
 Problem-1
 ![image](https://github.com/MohammadIsmailAlam/Coding_test_Mediusware/assets/102619575/7d59197f-3ae5-4d1b-9747-eaa1bd698c5c)
