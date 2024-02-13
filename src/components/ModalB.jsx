@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Button } from "react-bootstrap";
+import { Button, Table } from "react-bootstrap";
 import Modal from "react-bootstrap/Modal";
 import { useNavigate } from "react-router-dom";
 import ModalC from "./ModalC";
@@ -10,12 +10,20 @@ export default function ModalB() {
   const [onlyEvenChecked, setOnlyEvenChecked] = useState(false);
   const [selectedContact, setSelectedContact] = useState(null);
   const [showThirdModal, setShowThirdModal] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
 
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Fetch all contacts from the API
-    fetch("https://contact.mediusware.com/api/contacts")
+    fetchContacts();
+  }, [searchQuery]);
+
+  const fetchContacts = () => {
+    let apiUrl = "https://contact.mediusware.com/api/contacts";
+    if (searchQuery) {
+      apiUrl += `?search=${searchQuery}`;
+    }
+    fetch(apiUrl)
       .then((response) => response.json())
       .then((data) => {
         setContacts(data.results);
@@ -23,7 +31,7 @@ export default function ModalB() {
       .catch((error) => {
         console.error("Error fetching contacts:", error);
       });
-  }, []);
+  };
 
   const handleClose = () => {
     setShow(false);
@@ -46,6 +54,16 @@ export default function ModalB() {
     setShowThirdModal(true);
   };
 
+  const handleSearchChange = (e) => {
+    setSearchQuery(e.target.value);
+  };
+
+  const handleSearchKeyDown = (e) => {
+    if (e.key === "Enter") {
+      fetchContacts();
+    }
+  };
+
   return (
     <>
       <Modal show={show} backdrop="static" keyboard={false}>
@@ -53,17 +71,33 @@ export default function ModalB() {
           <Modal.Title>Modal title</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          {contacts
-            .filter((data) => data.country.name == "United States")
-            .map((data, index) => {
-              return (
-                <li key={index} onClick={() => handleItemClick(data)}>
-                  <p>ID: {data.id}</p>
-                  <p>Phone: {data.phone}</p>
-                  <p>Country: {data.country.name}</p>
-                </li>
-              );
-            })}
+          <input
+            type="text"
+            placeholder="Search..."
+            value={searchQuery}
+            onChange={handleSearchChange}
+            onKeyDown={handleSearchKeyDown}
+          />
+          <Table striped bordered hover>
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Phone</th>
+                <th>Country</th>
+              </tr>
+            </thead>
+            <tbody>
+              {contacts
+                .filter((data) => data.country.name === "United States")
+                .map((data, index) => (
+                  <tr key={index} onClick={() => handleItemClick(data)}>
+                    <td>{data.id}</td>
+                    <td>{data.phone}</td>
+                    <td>{data.country.name}</td>
+                  </tr>
+                ))}
+            </tbody>
+          </Table>
 
           {showThirdModal && (
             <ModalC
@@ -73,25 +107,29 @@ export default function ModalB() {
             />
           )}
 
-          <Button
-            style={{ backgroundColor: "white", color: "#46139f" }}
-            onClick={handleShowAllContacts}
-          >
-            Button A
-          </Button>
-          <Button style={{ backgroundColor: "white", color: "#ff7f50" }}>
-            Button B
-          </Button>
-          <Button
-            style={{
-              backgroundColor: "white",
-              border: "1px solid #46139f",
-              color: "#46139f",
-            }}
-            onClick={handleClose}
-          >
-            Button C
-          </Button>
+          <div style={{ marginTop: '10px' }}>
+            <Button
+              style={{ backgroundColor: "white", color: "#46139f", marginRight: '10px' }}
+              onClick={handleShowAllContacts}
+            >
+              Button A
+            </Button>
+            <Button
+              style={{ backgroundColor: "white", color: "#ff7f50", marginRight: '10px' }}
+            >
+              Button B
+            </Button>
+            <Button
+              style={{
+                backgroundColor: "white",
+                border: "1px solid #46139f",
+                color: "#46139f",
+              }}
+              onClick={handleClose}
+            >
+              Button C
+            </Button>
+          </div>
         </Modal.Body>
         <Modal.Footer>
           <label>
